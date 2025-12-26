@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 struct projek_klinik {
     char nama_pasien[50];
@@ -23,7 +24,7 @@ void tambah_data() {
         fclose(file);
     }
 
-    file = fopen("database_project_klinik.txt", "a");
+    file = fopen("database_klinik.txt", "a");
     if (!file) {
         printf("Gagal membuka file.\n");
         return;
@@ -68,8 +69,46 @@ void tambah_data() {
 }
 
 // fungsi untuk menampilkan data pasien
-
+void tampilkan_data() {
+    FILE *file = fopen("database_klinik.txt", "r");
+    if (!file) {
+        printf("Belum ada data pasien.\n");
+        return;
+    }
+    char line[200];
+    printf("\nData Pasien\n");
+    while(fgets(line, sizeof(line),file)) {
+        printf("%s", line);
+    }
+    fclose(file);
+}
 // fungsi untuk mencari data pasien
+void cari_data() {
+    char keyword[50];
+    printf("Masukkan nama pasien: ");
+    scanf(" %49[^\n]", keyword);
+
+    FILE *file = fopen("database_klinik.txt", "r");
+    if(!file) {
+        printf("Belum ada data.\n");
+        return;
+    }
+    char line[200];
+    int found = 0;
+    while(fgets(line, sizeof(line), file)) {
+        if(strstr(line, keyword)) {
+            found = 1;
+            printf("\nData pasien ditemukan: \n%s", line);
+            for(int i = 0; i < 5; i++) {
+                if(fgets(line, sizeof(line), file))
+                    printf("%s", line);
+            }
+        }
+    }
+    if(!found)
+        printf("Data pasien tidak ditemukan.\n");
+    fclose(file);
+}
 
 // switch menu utama
 int main() {
@@ -89,10 +128,10 @@ int main() {
                 tambah_data();
                 break;
             case 2:
-                // tampilkan_data();
+                tampilkan_data();
                 break;
             case 3:
-                // cari_data();
+                cari_data();
                 break;
             case 4:
                 printf("Terima kasih telah menggunakan layanan Klinik Sehat.\n");
