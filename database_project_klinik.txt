@@ -1,0 +1,7 @@
+#1
+Nama Pasien: iko
+Jenis Kelamin: l
+Usia: 20
+Penyakit: demam berdadarh
+Tanggal: 01/30/2025
+
