@@ -46,8 +46,16 @@ void tambah_data() {
         } while (data.jenis_kelamin != 'p' && data.jenis_kelamin != 'P' &&
                  data.jenis_kelamin != 'l' && data.jenis_kelamin != 'L');
 
-        printf("Masukkan usia: ");
-        scanf("%d", &data.usia);
+        while (1) {
+    printf("Masukkan usia: ");
+
+    if (scanf("%d", &data.usia) == 1 && data.usia > 0) {
+        break;
+    } else {
+        printf("Input salah! Usia harus berupa angka.\n");
+        while (getchar() !='\n');
+    }
+}
 
         printf("Masukkan penyakit: ");
         scanf(" %49[^\n]", data.penyakit);
