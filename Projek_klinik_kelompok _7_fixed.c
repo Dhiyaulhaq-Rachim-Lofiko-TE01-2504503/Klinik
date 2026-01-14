@@ -195,7 +195,7 @@ int main() {
         printf("1. Tambah Data Pasien\n");
         printf("2. Tampilkan Data Pasien\n");
         printf("3. Cari Data Pasien\n");
-        printf("4. hapus data\n");
+        printf("4. Hapus data\n");
         printf("5. Selesai\n");
         printf("Pilih menu (1-5): ");
         scanf("%d", &pilihan);
