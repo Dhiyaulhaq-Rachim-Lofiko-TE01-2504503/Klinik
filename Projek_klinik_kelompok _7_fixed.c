@@ -92,9 +92,9 @@ void tampilkan_data() {
 }
 // fungsi untuk mencari data pasien
 void cari_data() {
-    char keyword[50];
+    char nama[50];
     printf("Masukkan nama pasien: ");
-    scanf(" %49[^\n]", keyword);
+    scanf(" %49[^\n]", nama);
 
     FILE *file = fopen("database_klinik.txt", "r");
     if(!file) {
@@ -104,9 +104,9 @@ void cari_data() {
     char line[200];
     int found = 0;
     while(fgets(line, sizeof(line), file)) {
-        if(strstr(line, keyword)) {
+        if(strstr(line, nama)) {
             found = 1;
-            printf("\nData pasien ditemukan: \n%s", line);
+            printf("\nData pasien: \n%s", line);
             for(int i = 0; i < 5; i++) {
                 if(fgets(line, sizeof(line), file))
                     printf("%s", line);
@@ -116,6 +116,74 @@ void cari_data() {
     if(!found)
         printf("Data pasien tidak ditemukan.\n");
     fclose(file);
+}
+//fungsi hapus
+void hapus_data() {
+    char keyword[50];
+    char konfirmasi;
+    int ditemukan = 0;
+
+    printf("Masukkan nama pasien yang ingin dihapus: ");
+    scanf(" %49[^\n]", keyword);
+
+    FILE *file = fopen("database_klinik.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    if (!file || !temp) {
+        printf("Gagal membuka file.\n");
+        return;
+    }
+
+    char blok[7][200];
+    int i;
+
+    while (fgets(blok[0], sizeof(blok[0]), file)) {
+        if (blok[0][0] == '#') {
+
+            for (i = 1; i < 7; i++) {
+                fgets(blok[i], sizeof(blok[i]), file);
+            }
+
+            int cocok = 0;
+            for (i = 0; i < 7; i++) {
+                if (strstr(blok[i], keyword)) {
+                    cocok = 1;
+                    break;
+                }
+            }
+
+            if (cocok) {
+                ditemukan = 1;
+                printf("\nData pasien ditemukan:\n");
+                for (i = 0; i < 7; i++) {
+                    printf("%s", blok[i]);
+                }
+
+                printf("\nYakin ingin menghapus data ini? (y/n): ");
+                scanf(" %c", &konfirmasi);
+
+                if (konfirmasi == 'y' || konfirmasi == 'Y') {
+                    printf("Data pasien berhasil dihapus.\n");
+                    continue; // skip → data terhapus
+                }
+            }
+
+            // tulis ulang data yang tidak dihapus
+            for (i = 0; i < 7; i++) {
+                fputs(blok[i], temp);
+            }
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("database_klinik.txt");
+    rename("temp.txt", "database_klinik.txt");
+
+    if (!ditemukan) {
+        printf("Data pasien tidak ditemukan.\n");
+    }
 }
 
 // switch menu utama
@@ -127,8 +195,9 @@ int main() {
         printf("1. Tambah Data Pasien\n");
         printf("2. Tampilkan Data Pasien\n");
         printf("3. Cari Data Pasien\n");
-        printf("4. Keluar\n");
-        printf("Pilih menu (1-4): ");
+        printf("4. hapus data\n");
+        printf("5. Selesai\n");
+        printf("Pilih menu (1-5): ");
         scanf("%d", &pilihan);
 
         switch (pilihan) {
@@ -142,12 +211,14 @@ int main() {
                 cari_data();
                 break;
             case 4:
-                printf("Terima kasih telah menggunakan layanan Klinik Sehat.\n");
+                hapus_data();
+                break;
+            case 5:
+                printf("selesai\n");
                 break;
             default:
                 printf("Pilihan tidak valid. Silakan coba lagi.\n");
         }
-    } while (pilihan != 4);
-
+    } while (pilihan != 5);
     return 0;
 }
